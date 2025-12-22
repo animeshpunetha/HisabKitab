@@ -22,7 +22,8 @@ app.use(helmet({ crossOriginResourcePolicy: false })); // Allow serving images
 app.use(morgan('dev')); // Log requests
 
 // Serve static uploads
-app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
+const uploadDir = process.env.UPLOAD_DIR || path.join(__dirname, '../uploads');
+app.use('/uploads', express.static(uploadDir));
 
 // Routes
 app.use('/api/auth', authRoutes);

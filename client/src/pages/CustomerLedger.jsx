@@ -2,7 +2,8 @@ import { useEffect, useState, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import useTransactionStore from '../store/transactionStore';
 import useAuthStore from '../store/authStore';
-import { Pencil, Trash2, X, Send, Image as ImageIcon, Paperclip } from 'lucide-react';
+import { Pencil, Trash2, X, Send, Image as ImageIcon, Paperclip, Copy } from 'lucide-react';
+import { API_URL } from '../services/api';
 
 const CustomerLedger = () => {
     const { customerId } = useParams();
@@ -24,18 +25,30 @@ const CustomerLedger = () => {
 
     const handleWhatsAppRemind = () => {
         if (!customer) return;
-        const absBalance = Math.abs(balance);
-
-        const senderName = user?.name || 'Store Owner';
-
-        const message = `Namaste ${customer.name},\nAapka ₹${absBalance} pending hai.\nKripya jaldi payment karein.`;
-
+        const message = generateReminderMessage();
         const encodedMessage = encodeURIComponent(message);
 
         const cleanPhone = customer.phone.replace(/\D/g, '');
         const phoneNumber = cleanPhone.length === 10 ? `91${cleanPhone}` : cleanPhone;
 
         window.open(`https://wa.me/${phoneNumber}?text=${encodedMessage}`, '_blank');
+    };
+
+    const handleCopyMessage = async () => {
+        if (!customer) return;
+        const message = generateReminderMessage();
+        try {
+            await navigator.clipboard.writeText(message);
+            alert('Reminder message copied to clipboard!');
+        } catch (err) {
+            console.error('Failed to copy:', err);
+        }
+    };
+
+    const generateReminderMessage = () => {
+        const absBalance = Math.abs(balance);
+        const senderName = user?.name || 'Store Owner';
+        return `Namaste ${customer.name},\nAapka ₹${absBalance} pending hai.\nKripya jaldi payment karein.`;
     };
 
     // Transaction Form State
@@ -203,6 +216,13 @@ const CustomerLedger = () => {
                     {/* Actions */}
                     <div className="flex gap-2 items-center">
                         <button
+                            onClick={handleCopyMessage}
+                            className="bg-gray-100 hover:bg-gray-200 text-gray-600 p-2 rounded-full shadow-sm transition-colors"
+                            title="Copy Reminder Message"
+                        >
+                            <Copy size={18} />
+                        </button>
+                        <button
                             onClick={handleWhatsAppRemind}
                             className="bg-green-500 hover:bg-green-600 text-white p-2 rounded-full shadow-sm transition-colors"
                             title="Send WhatsApp Reminder"
@@ -306,10 +326,10 @@ const CustomerLedger = () => {
                                         {item.type === 'IMAGE' && item.mediaUrl && (
                                             <div className="mb-2 rounded-lg overflow-hidden max-w-xs">
                                                 <img
-                                                    src={`http://localhost:5000${item.mediaUrl}`}
+                                                    src={`${API_URL}${item.mediaUrl}`}
                                                     alt="attachment"
                                                     className="w-full h-48 object-cover cursor-pointer hover:opacity-95 transition-opacity"
-                                                    onClick={() => window.open(`http://localhost:5000${item.mediaUrl}`, '_blank')}
+                                                    onClick={() => window.open(`${API_URL}${item.mediaUrl}`, '_blank')}
                                                 />
                                             </div>
                                         )}
