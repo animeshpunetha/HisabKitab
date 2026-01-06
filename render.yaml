@@ -1,4 +1,5 @@
 services:
+  # Backend Service
   - type: web
     name: hisabkitab-server
     env: node
@@ -15,11 +16,12 @@ services:
           name: hisabkitab-db
           property: connectionString
 
-  - type: static
+  # Frontend Service (Static Site)
+  - type: static_site
     name: hisabkitab-client
     rootDir: client
     buildCommand: npm install && npm run build
-    staticPublishPath: dist
+    publishDir: dist
     envVars:
       - key: VITE_API_URL
         fromService:
