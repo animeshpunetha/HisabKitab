@@ -1,5 +1,4 @@
 services:
-  # Backend Service
   - type: web
     name: hisabkitab-server
     env: node
@@ -16,11 +15,11 @@ services:
           name: hisabkitab-db
           property: connectionString
 
-  - type: static_site
+  - type: static
     name: hisabkitab-client
     rootDir: client
     buildCommand: npm install && npm run build
-    publishDir: dist
+    staticPublishPath: dist
     envVars:
       - key: VITE_API_URL
         fromService:
@@ -28,10 +27,8 @@ services:
           name: hisabkitab-server
           envVar: RENDER_EXTERNAL_URL
 
-
-
 databases:
   - name: hisabkitab-db
     databaseName: hisabkitab
     user: hisabkitab
-    plan: free # Uses the free tier for PostgreSQL
+    plan: free
