@@ -208,9 +208,6 @@ const CustomerLedger = () => {
                         </div>
                         <div>
                             <h1 className="text-lg font-bold text-gray-900 leading-tight">{customer?.name || 'Loading...'}</h1>
-                            <p className={`text-xs font-bold ${balance >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-                                Bal: ₹{Math.abs(balance)} {balance >= 0 ? '(Advance)' : '(Due)'}
-                            </p>
                         </div>
                     </div>
                     {/* Actions */}
@@ -229,21 +226,15 @@ const CustomerLedger = () => {
                         >
                             <Send size={18} />
                         </button>
-                        {/* Quick Transaction Actions (Mobile optimized: maybe hide text on very small screens) */}
-                        <button
-                            onClick={() => openAddTransaction('DEBIT')}
-                            className="hidden sm:block rounded-lg bg-red-100 px-3 py-2 text-xs font-bold text-red-700 hover:bg-red-200"
-                        >
-                            You Gave -
-                        </button>
-                        <button
-                            onClick={() => openAddTransaction('CREDIT')}
-                            className="hidden sm:block rounded-lg bg-green-100 px-3 py-2 text-xs font-bold text-green-700 hover:bg-green-200"
-                        >
-                            You Got +
-                        </button>
                     </div>
                 </div>
+            </div>
+
+            {/* Fixed Balance Banner */}
+            <div className="bg-white/90 backdrop-blur border-b border-gray-200 py-2 text-center shadow-sm z-10 flex-none">
+                <p className={`text-sm font-bold ${balance >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                    Current Balance: ₹{Math.abs(balance)} {balance >= 0 ? '(Advance)' : '(Due)'}
+                </p>
             </div>
 
             {/* Chat/Timeline Area */}
@@ -343,6 +334,22 @@ const CustomerLedger = () => {
                         }
                     })}
                 </div>
+            </div>
+
+            {/* Transaction Buttons (Fixed above input) */}
+            <div className="grid grid-cols-2 gap-3 px-4 py-2 bg-white border-t border-gray-100 flex-none">
+                <button
+                    onClick={() => openAddTransaction('DEBIT')}
+                    className="flex items-center justify-center gap-2 rounded-xl bg-red-50 py-3 text-sm font-bold text-red-600 border border-red-100 hover:bg-red-100 transition-colors shadow-sm"
+                >
+                    You Gave <span className="text-lg">−</span>
+                </button>
+                <button
+                    onClick={() => openAddTransaction('CREDIT')}
+                    className="flex items-center justify-center gap-2 rounded-xl bg-green-50 py-3 text-sm font-bold text-green-600 border border-green-100 hover:bg-green-100 transition-colors shadow-sm"
+                >
+                    You Got <span className="text-lg">+</span>
+                </button>
             </div>
 
             {/* Input Area */}
