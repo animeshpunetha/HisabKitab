@@ -16,19 +16,6 @@ services:
           name: hisabkitab-db
           property: connectionString
 
-  # Frontend Service (Static Site)
-  - type: static_site
-    name: hisabkitab-client
-    rootDir: client
-    buildCommand: npm install && npm run build
-    publishDir: dist
-    envVars:
-      - key: VITE_API_URL
-        fromService:
-          type: web
-          name: hisabkitab-server
-          envVar: RENDER_EXTERNAL_URL
-
 databases:
   - name: hisabkitab-db
     databaseName: hisabkitab
